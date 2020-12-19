@@ -5,7 +5,7 @@ public enum PieceType {
 	
 	
 	O(new Point[] {new Point(0,0), new Point(0, 1), new Point(1, 0), new Point(1, 1)}, Color.decode("0xE39F02")),
-	I(new Point[] {new Point(0,0), new Point(1, 0), new Point(2, 0), new Point(3, 0)}, Color.decode("#0F9BD7")),
+	I(new Point[] {new Point(0,1), new Point(1, 1), new Point(2, 1), new Point(3, 1)}, Color.decode("#0F9BD7")),
 	L(new Point[] {new Point(0,0), new Point(0, 1), new Point(1,0), new Point(2, 0)}, Color.decode("#2141C6")),
 	T(new Point[] {new Point(1,0), new Point(0,1), new Point(1,1), new Point(2,1)}, Color.decode("#AF298A")),
 	S(new Point[] {new Point(0,0), new Point(1,0), new Point(1,1), new Point(2,1)}, Color.decode("#59B101")),

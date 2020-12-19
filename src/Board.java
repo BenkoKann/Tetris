@@ -5,11 +5,13 @@ public class Board {
 	public int width;
 	public int height;
 	public PieceType[][] matrix;
-	
-	
-	
-	
+	public int score; // number of lines cleared in total
+
 	public Piece fallingPiece; 
+	
+	
+	public PieceType[][] prevMatrix = null;
+	public Piece prevPiece = null;
 	
 	public Board(int width, int height) {
 		this.width = width;
@@ -21,6 +23,35 @@ public class Board {
 		
 		
 	}
+	
+	public Board(PieceType[][] matrix, Piece fallingPiece) { // basically a clone constructor
+		this.width = 10;
+		this.height = 20;
+		
+		this.matrix = matrix;
+		this.fallingPiece = fallingPiece;
+		
+	}
+	
+	public void push() { // saves current board state
+		this.prevMatrix = copy2DArray(matrix);
+		this.prevPiece = new Piece(fallingPiece.type, fallingPiece.x, fallingPiece.y, fallingPiece.points);
+	}
+	
+	public void pop() { // restores previous saved board state
+		this.matrix = prevMatrix;
+		this.fallingPiece = prevPiece;
+	}
+
+	
+	public PieceType[][] copy2DArray(PieceType[][] old) {
+		PieceType[][] child = new PieceType[old.length][];
+		for(int i = 0; i < old.length; i++) {
+			child[i] = old[i].clone();
+		}
+		return child;
+	}
+	
 	
 	public boolean placePiece(int x, int y) {
 		
@@ -121,37 +152,23 @@ public class Board {
 			}
 		}
 		
+		
+		
 		return result;
 	}
 	
 	public void dropPiece() {
-//		int minDist = 10000;
-//		for(int i = 0; i < this.fallingPiece.points.length; i++) {
-//			
-//			int xPos = fallingPiece.x + this.fallingPiece.points[i].x;
-//			int yPos = fallingPiece.y - this.fallingPiece.points[i].y;
-//		
-//			int distanceToFloor = 19 - yPos - getColumnHeight(xPos);
-//			if(distanceToFloor < minDist) {
-//				minDist = distanceToFloor;
-//			}
-//		}
-//		
-//		this.fallingPiece.y += minDist;
 		boolean result = true;
 		while(result == true) {
 			result = this.shiftDown();
 		}
 	}
 	
-	private int getColumnHeight(int column) {
-		for(int i = 0; i < matrix.length; i++) {
-			if(matrix[(19)-i][column] == PieceType.Empty) {
-				return i+1;
-			}
-		}
-		return -1;
-	}
+	/**
+	 * computes the value Y in which the piece will come to rest
+	 */
+	
+	
 	
 	public boolean shiftLeft() {
 		this.clearPiece();
@@ -168,18 +185,18 @@ public class Board {
 		return true;
 	}
 	
-	public boolean clearLines() {
+	public void clearLines() {
 		for(int i = 0; i < matrix.length; i++) {
 			for(int j = 0; j < matrix[0].length; j++) {
 				if(matrix[i][j] == PieceType.Empty) break; // don't need to clear this line;
 				else if(j == matrix[0].length - 1) { // reached end 
+					this.score++;
 					clearLine(i);
 					slideBlocksDown(i);
 				}
 			}
 		}
 		
-		return true;
 	}
 	
 	private void clearLine(int row) {
@@ -196,15 +213,69 @@ public class Board {
 		}
 	}
 	
+	// [START] stuff the AI uses
+	
+	public double getAverageHeight() {
+		double sum = 0;
+		for(int i = 0; i < width; i++) {
+			sum += this.getHeightOfColumn(i);
+		}
+		return sum / width;
+	}
+	
+	public int maxHeight() {
+		int maxHeight = -1;
+
+		for(int x = 0; x < width; x++) {
+			int columnHeight = 0;
+
+			columnHeight = this.getHeightOfColumn(x);
+			if(columnHeight > maxHeight) {
+				maxHeight = columnHeight;
+			}		
+		}
+		
+		return maxHeight;
+	}
+	
+	public int getHeightOfColumn(int x) {
+		for(int i = 0; i < height; i++) {
+			if(matrix[i][x] != PieceType.Empty) {
+				return height - i;
+			}
+		}
+		return -1;
+	}
+	
+	// [END] Stuff the AI Uses
+	
 	
 	
 	private void initializeBoard() { // just set everything to empty values;
 		for(int y = 0; y < height; y++) {
 			for(int x = 0; x < width; x++) {
 				this.matrix[y][x] = PieceType.Empty;
+				this.matrix[y][x] = PieceType.Empty;
 				
 			}
 		}
 
+	}
+	
+	public int getWidth() {
+		return this.width;
+	}
+	
+	public int getHeight() {
+		return this.height;
+	}
+	
+	public static void main(String[] args) {
+		Board b = new Board(5, 5);
+		b.initializeBoard();
+		
+		b.matrix[4][4] = PieceType.J;
+		b.matrix[3][4] = PieceType.L;
+		System.out.println(b.getHeightOfColumn(4));
 	}
 }

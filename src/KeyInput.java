@@ -3,60 +3,73 @@ import java.awt.event.KeyEvent;
 
 public class KeyInput extends KeyAdapter{
 	
-	public static boolean left = false;
-	public static boolean right = false;
-	public static boolean up = false;
-	public static boolean down = false;
+//	public static boolean left = false;
+//	public static boolean right = false;
+//	public static boolean up = false;
+//	public static boolean down = false;
+	
+	Game game;
+	
+	
+	public KeyInput(Game game) {
+		this.game = game;
+	}
+	
 	
 	public void keyPressed(KeyEvent e) {
 		int key = e.getKeyCode();
 		
 		if(key == KeyEvent.VK_D) {
-			right = true;
+			if(!game.gameOver) {
+				game.board.shiftRight();
+				game.repaint();
+			}
 		}		
 		if(key == KeyEvent.VK_A) {
-			left = true;
+			if(!game.gameOver) {
+				game.board.shiftLeft();
+				game.repaint();
+			}
 		}
 		if(key == KeyEvent.VK_W) {
-			up = true;
+			if(!game.gameOver) {
+				game.board.rotate();
+				game.repaint();
+			}
+			
 		}
 		if(key == KeyEvent.VK_S) {
-			down = true;
+			if(!game.gameOver) {
+				game.board.clearPiece();
+				game.board.dropPiece();
+				//game.board.placePiece();
+				game.board.fallingPiece = new Piece(PieceType.getRandomPieceType(), 4, 1);
+				game.board.clearLines();
+				game.repaint();
+			}
 		}
-	}
-	
-	public void keyReleased(KeyEvent e) {
-		int key = e.getKeyCode();
 		
-		if(key == KeyEvent.VK_D) right = false;
+		if(key == KeyEvent.VK_SPACE) {
+			if(!game.gameOver) {
+				game.board.clearPiece();
+				DefaultBrain b = new DefaultBrain();
+				Brain.Move move = b.bestMove(game.board, 20, new Brain.Move());
 
-		
-		if(key == KeyEvent.VK_A) left = false;
-		if(key == KeyEvent.VK_W) {
-			up = false;
+				game.board.placePiece(move.x, move.y);
+			
+				game.board.fallingPiece = new Piece(PieceType.getRandomPieceType(), 4, 1);
+				game.board.clearLines();
+				game.repaint();
+			}
+			
+			
+			
+			
 		}
-		if(key == KeyEvent.VK_S) {
-			down = false;
-		}
 	}
 	
-	
-	
-	public static boolean isLeft() {
-		return left;
-	}
-	
-	public static boolean isRight() {
-		return right;
-	}
-	
-	public static boolean isUp() {
-		return up;
-	}
-	
-	public static boolean isDown() {
-		return down;
-	}
+
+
 	
 	
 }

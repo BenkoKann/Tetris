@@ -19,6 +19,11 @@ public class Piece {
 		this.points = this.type.getPoints(); // only get points from enum in the constructor, now use the field to get them
 	}
 	
+	public Piece(PieceType type, int x, int y, Point[] points) {
+		this(type, x, y);
+		this.points = this.type.getPoints(); 
+	}
+	
 	public int getWidth() {
 		int leftMost = 999;
 		int rightMost = - 100;
@@ -127,14 +132,7 @@ public class Piece {
 	}
 	
 	public static void main(String[] args) {
-		Piece p1 = new Piece(PieceType.L, 1, 1);
-		for(int i = 0; i < p1.points.length; i++) {
-			System.out.println("("+p1.points[i].x + ", " + p1.points[i].y+")");
-		}
-		p1.points = p1.computeNextRotation();
-		for(int i = 0; i < p1.points.length; i++) {
-			System.out.println("("+p1.points[i].x+ ", " + p1.points[i].y+")");
-		}
+	
 	}
 	
 

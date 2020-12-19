@@ -13,8 +13,8 @@ public class Window {
 		frame.setMinimumSize(new Dimension(width, height));
 		frame.setPreferredSize(new Dimension(width, height));
 		frame.add(game);
-		frame.addKeyListener(new KeyInput());
-		frame.setLocationRelativeTo(null);
+		frame.addKeyListener(new KeyInput(game));
+		//frame.setLocationRelativeTo(null);
 		frame.setResizable(false);
 		frame.setVisible(true);
 	}
